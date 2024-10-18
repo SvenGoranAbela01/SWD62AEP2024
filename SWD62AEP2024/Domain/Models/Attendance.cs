@@ -14,12 +14,12 @@ namespace Domain.Models
         public int Id { get; set; }
         public string StudentFK { get; set; }
         [ForeignKey("StudentFK")]
-        Student Student { get; set; }
+        public virtual Student Student { get; set; }
         public bool Present {  get; set; }
         public DateTime Timestamp {  get; set; }
         public string SubjectFK {  get; set; }
 
         [ForeignKey("SubjectFK")]
-        Subject Subject { get; set; }
+        public virtual Subject Subject { get; set; }
     }
 }

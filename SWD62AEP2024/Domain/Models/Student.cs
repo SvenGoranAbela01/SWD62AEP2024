@@ -23,6 +23,6 @@ namespace Domain.Models
         // group properties right through an eventual student instance
         //adv: i can get data related to the Group pertaining to this student without having to write additional sql/linq statements
         [ForeignKey("GroupFK")]
-        public Group Group { get; set; }
+        public virtual Group Group { get; set; }
     }
 }
