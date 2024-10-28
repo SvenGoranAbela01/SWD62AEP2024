@@ -88,36 +88,40 @@ namespace Presentation.Controllers
         }
 
         [HttpGet] //used to load the page with empty textboxes
-        public IActionResult Create([FromServices] GroupsRepository groupRepository) 
+        public IActionResult Create([FromServices] GroupsRepository groupRepository)
         {
+
             //eventually: we need to fetch a list of existing groups the end user can select from
 
             var myGroups = groupRepository.getGroups();
 
             //How are we going to pass the myGroups into the View?
-            //Approach 1 - we can pass a model into the view where we create a ViewModel
-            //Problem is: you cannot pass IQueryable<Group> model into Student Model
+            //Approach 1 - we can pass a model into the View where we create a ViewModel
+            //problem is: you cannot pass IQueryable<Group> model into Student model
             StudentCreateViewModel myModel = new StudentCreateViewModel();
             myModel.Groups = myGroups.ToList();
+            //  myModel.Student = new Student();
 
+            return View(myModel);
 
             //Approach 2
 
-            return View(myModel); 
+
+
         }
 
-        [HttpPost] //Is triggered by the submit button of the form
-        public IActionResult Create(Student s) 
-        { 
-            if(_studentsRepository.GetStudent(s.IdCard) != null)
+        [HttpPost] //is triggered by the submit button of the form
+        public IActionResult Create(Student s, [FromServices] GroupsRepository groupRepository)
+        {
+
+            if (_studentsRepository.GetStudent(s.IdCard) != null)
             {
                 TempData["error"] = "Student already exists";
                 return RedirectToAction("List");
             }
             else
             {
-                //Validations, sanitization of data
-                ModelState.Remove(nameof(Student.Group));
+                ModelState.Remove(nameof(Group));
 
                 //this line will ensure that if there are validation policies (Centralized /not)
                 //applied, they will have to pass from here; it ensures that validations have been triggered
@@ -128,9 +132,19 @@ namespace Presentation.Controllers
 
                     return RedirectToAction("List");
                 }
-                //Add some error messages here
+
+                //add some error messages here
                 TempData["error"] = "Check your inputs";
-                return View(s);
+
+                //populating a StudentCreateViewModel
+                var myGroups = groupRepository.getGroups();
+                StudentCreateViewModel myModel = new StudentCreateViewModel();
+                myModel.Groups = myGroups.ToList();
+                myModel.Student = s; //why do i assign Student s that was submitted in this method?
+                                     //passing the same instance back to the page
+                                     //so that I show the end-user the same data he/she gave me
+
+                return View(myModel); //will be looking for a view as the action name.....Create
             }
         }
     }
