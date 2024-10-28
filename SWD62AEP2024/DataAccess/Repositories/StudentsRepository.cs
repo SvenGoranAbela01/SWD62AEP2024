@@ -40,6 +40,7 @@ namespace DataAccess.Repositories
             oldStudent.FirstName = student.FirstName;
             oldStudent.LastName = student.LastName;
             oldStudent.GroupFK = student.GroupFK;
+            oldStudent.ImagePath = student.ImagePath;
 
             myContext.SaveChanges();
 

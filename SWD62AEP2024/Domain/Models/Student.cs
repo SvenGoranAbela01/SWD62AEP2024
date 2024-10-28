@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -18,11 +19,16 @@ namespace Domain.Models
         public string LastName { get; set; }
         //This is the foreign key so this contains a single value
         public string GroupFK { get; set; }
+
         //This is a navigational property
         // the navigational property will allow me to explore and navigate the
         // group properties right through an eventual student instance
         //adv: i can get data related to the Group pertaining to this student without having to write additional sql/linq statements
         [ForeignKey("GroupFK")]
         public virtual Group Group { get; set; }
+
+        public string?
+            ImagePath { get; set; }
     }
+    [+]
 }
