@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" enctype="multipart/form-data">
             @Html.ValidationSummary()
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -42,6 +42,13 @@
                 <span asp-validation-for="Student.GroupFK" class="text-danger"></span>
             </div>
             <br />
+
+            <div class="form-group">
+                <label class="form-label">Upload file</label>
+                <input type="file" class="form-control" name="file" />
+            </div>
+            <br />
+
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>

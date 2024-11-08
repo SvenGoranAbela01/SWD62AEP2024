@@ -30,5 +30,4 @@ namespace Domain.Models
         public string?
             ImagePath { get; set; }
     }
-    [+]
 }

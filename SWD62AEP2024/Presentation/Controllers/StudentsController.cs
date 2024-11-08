@@ -46,7 +46,7 @@ namespace Presentation.Controllers
 
         // handle the click of the Submit Changes buttonl
         [HttpPost]
-        public IActionResult Update(Student student)
+        public IActionResult Update(Student student, IFormFile file, [FromServices] GroupsRepository groupRepository, [FromServices] IWebHostEnvironment host)
         {
             try
             {
@@ -65,6 +65,23 @@ namespace Presentation.Controllers
                 {
                     //Validations, sanitization of data
                     ModelState.Remove(nameof(Student.Group));
+                    ModelState.Remove("file");
+
+                    //file upload
+                    if (file != null)
+                    {
+                        string filename = Guid.NewGuid().ToString() + System.IO.Path.GetExtension(file.FileName);
+                        string absolutePath = host.WebRootPath + "\\images\\" + filename;
+
+                        using (var f = System.IO.File.Create(absolutePath))
+                        {
+                            file.CopyTo(f);
+                        }
+
+                        string relativePath = "\\images\\" + filename;
+                        student.ImagePath = relativePath;
+                    }
+
 
                     //this line will ensure that if there are validation policies (Centralized /not)
                     //applied, they will have to pass from here; it ensures that validations have been triggered
@@ -111,7 +128,7 @@ namespace Presentation.Controllers
         }
 
         [HttpPost] //is triggered by the submit button of the form
-        public IActionResult Create(Student s, [FromServices] GroupsRepository groupRepository)
+        public IActionResult Create(Student s, IFormFile file, [FromServices] GroupsRepository groupRepository, [FromServices] IWebHostEnvironment host)
         {
 
             if (_studentsRepository.GetStudent(s.IdCard) != null)
@@ -122,11 +139,28 @@ namespace Presentation.Controllers
             else
             {
                 ModelState.Remove(nameof(Group));
+                ModelState.Remove("file");
 
                 //this line will ensure that if there are validation policies (Centralized /not)
                 //applied, they will have to pass from here; it ensures that validations have been triggered
                 if (ModelState.IsValid)
                 {
+                    //file upload
+                    if(file != null)
+                    {
+                        string filename = Guid.NewGuid().ToString() + System.IO.Path.GetExtension(file.FileName);
+                        string absolutePath = host.WebRootPath + "\\images\\" + filename;
+
+                        using (var f = System.IO.File.Create(absolutePath))
+                        {
+                            file.CopyTo(f);
+                        }
+
+                        string relativePath = "\\images\\" + filename;
+                        s.ImagePath = relativePath;
+                    }
+
+                    //save the details in db
                     _studentsRepository.AddStudent(s);
                     TempData["message"] = "Student was added successfully";
 
