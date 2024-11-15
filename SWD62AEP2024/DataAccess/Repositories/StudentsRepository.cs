@@ -50,6 +50,14 @@ namespace DataAccess.Repositories
             myContext.Students.Add(student);
             myContext.SaveChanges();
         }
-        public void DeleteStudent(string idcard) { }
+        public void DeleteStudent(string idcard) 
+        {
+            var studentToDelete = GetStudent(idcard);
+            if (studentToDelete != null)
+            {
+                myContext.Students.Remove(studentToDelete);
+                myContext.SaveChanges();
+            }
+        }
     }
 }

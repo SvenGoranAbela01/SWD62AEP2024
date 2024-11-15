@@ -20,7 +20,7 @@
                     </p>
                     <a href="/Students/Edit/@student.IdCard" class="btn btn-primary">Update Details</a>
                     &nbsp
-                    <a href="#" class="btn btn-primary">Delete Account</a>
+                    <a href="/Students/Delete?id=@student.IdCard" onclick="return confirm('Are you sure?');" class="btn btn-primary">Delete Account</a>
                 </div>
             </div>
         </div>

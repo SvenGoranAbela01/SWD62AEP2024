@@ -181,5 +181,13 @@ namespace Presentation.Controllers
                 return View(myModel); //will be looking for a view as the action name.....Create
             }
         }
+    
+        public IActionResult Delete(string id)
+        {
+            _studentsRepository.DeleteStudent(id);
+            TempData["message"] = "Student with id " + id + " was deleted sucessfully";
+
+            return RedirectToAction("List");
+        }
     }
 }
