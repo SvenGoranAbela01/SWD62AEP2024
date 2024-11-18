@@ -1,0 +1,54 @@
+﻿<div class="row">
+    <div class="col-2">
+        <label class="fw-bold">Group:</label>
+    </div>
+    <div class="col-10">
+        <span>@Model.groupCode</span>
+    </div>
+
+    <div class="col-2">
+        <label class="fw-bold">Subject:</label>
+    </div>
+    <div class="col-10">
+        <span>@Model.SubjectName</span>
+    </div>
+</div>
+
+<hr />
+
+
+<form method="post" action="/Attendance/Create">
+
+    <input type="hidden" value="@Model.SubjectCode" name="subjectCode" />
+    <input type="hidden" value="@Model.groupCode" name="groupCode" />
+
+    <table class="table table-striped table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>ID Card</th>
+                <th>Present</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var student in Model.Students)
+            {
+                <tr>
+                    <td>@student.FirstName</td>
+                    <td>@student.LastName</td>
+                    <td>@student.IdCard</td>
+                    <td class="text-center">
+                        <input type="hidden" name="attendance[@student.IdCard]" value="false" />
+                        <input type="checkbox" name="attendance[@student.IdCard]" value="true" class="form-check-input" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+
+
+    <input type="submit" value="Save Attendance" />
+
+</form>

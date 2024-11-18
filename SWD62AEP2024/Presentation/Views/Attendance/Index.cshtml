@@ -1,0 +1,23 @@
+﻿<form method="get" action="/Attendance/Create" class="p-4 border rounded shadow-sm">
+    <div class="mb-3">
+        <label for="groupCode" class="form-label">Select Group</label>
+        <select name="groupCode" id="groupCode" class="form-select">
+            @foreach (var group in Model.Groups)
+            {
+                <option value="@group.Code">@group.Programme - @group.Code</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label for="subjectCode" class="form-label">Select Subject</label>
+        <select name="subjectCode" id="subjectCode" class="form-select">
+            @foreach (var subject in Model.Subjects)
+            {
+                <option value="@subject.Code">@subject.Name</option>
+            }
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Take Attendance</button>
+</form>
