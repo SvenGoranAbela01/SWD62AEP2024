@@ -61,9 +61,27 @@ namespace Presentation.Controllers
             var subjects = _subjectsRepository.getSubjects().ToList();
             var groups = _groupsRepository.getGroups().ToList();
 
+            //Time | Group | Subject
+            List<SelectPastAttendancesViewModel> pastAttendances = _attendancesRepository.GetAttendances()
+                 .GroupBy(x => new
+                 {
+                     Date = x.Timestamp,
+                     Subject = x.Subject,
+                     GroupCode = x.Student.GroupFK
+                 })
+                  .Select(group => new SelectPastAttendancesViewModel()
+                  {
+                      SubjectCode = group.Key.Subject.Code,
+                      Date = group.Key.Date,
+                      GroupCode = group.Key.GroupCode,
+                      SubjectName = group.Key.Subject.Name
+                  }).
+                 ToList();
+
             SelectGroupSubjectViewModel viewModel = new SelectGroupSubjectViewModel();
-            viewModel.Subjects = subjects;
-            viewModel.Groups = groups;
+            viewModel.Subjects = subjects.ToList();
+            viewModel.Groups = groups.ToList();
+            viewModel.PastAttendances = pastAttendances;
 
             //Create a new ViewModel which accespts and laso a list of groups and a list of Subjects
 
