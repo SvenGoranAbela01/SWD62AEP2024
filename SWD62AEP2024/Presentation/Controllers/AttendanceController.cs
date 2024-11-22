@@ -104,9 +104,15 @@ namespace Presentation.Controllers
         }
 
         [HttpPost]//it saves the absents and presents of all the students from the first Create method
-        public IActionResult Create()
+        public IActionResult Create(List<Attendance> attendances)
         {
-            return View();
+            if (attendances.Count > 0)
+            {
+                _attendancesRepository.AddAttendances(attendances);
+                TempData["message"] = "Attendance Saved";
+            }
+
+            return RedirectToAction("Index");
         }
     }
 }

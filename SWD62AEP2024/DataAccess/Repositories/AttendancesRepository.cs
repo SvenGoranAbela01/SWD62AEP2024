@@ -26,6 +26,19 @@ namespace DataAccess.Repositories
             _attendanceContext.SaveChanges();
         }
 
+        public void AddAttendances(List<Attendance> attendances)
+        {
+            var currentTime = DateTime.Now; // time is taken once
+
+            foreach (var a in attendances)
+            {
+                a.Timestamp = currentTime;
+                _attendanceContext.Attendances.Add(a);
+            }
+
+            _attendanceContext.SaveChanges();
+        }
+
         public IQueryable<Attendance> GetAttendances(DateTime date, string groupCode, string subjectCode)
         {
             return _attendanceContext.Attendances.Where(x =>

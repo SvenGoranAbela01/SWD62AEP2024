@@ -19,9 +19,6 @@
 
 <form method="post" action="/Attendance/Create">
 
-    <input type="hidden" value="@Model.SubjectCode" name="subjectCode" />
-    <input type="hidden" value="@Model.groupCode" name="groupCode" />
-
     <table class="table table-striped table-bordered table-hover">
         <thead class="table-dark">
             <tr>
@@ -32,15 +29,17 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var student in Model.Students)
+            @for(int s = 0; s<Model.Students.Count; s++)
             {
+                var student = Model.Students[s];
                 <tr>
                     <td>@student.FirstName</td>
                     <td>@student.LastName</td>
                     <td>@student.IdCard</td>
                     <td class="text-center">
-                        <input type="hidden" name="attendance[@student.IdCard]" value="false" />
-                        <input type="checkbox" name="attendance[@student.IdCard]" value="true" class="form-check-input" />
+                        <input type="hidden" value="@Model.SubjectCode" name="attendances[@s].SubjectFK" />
+                        <input type="hidden" name="attendances[@s].StudentFK" value="@student.IdCard" />
+                        <input type="checkbox" name="attendances[@s].Present" value="true" class="form-check-input" />
                     </td>
                 </tr>
             }
