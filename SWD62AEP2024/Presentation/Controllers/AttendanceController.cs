@@ -66,17 +66,23 @@ namespace Presentation.Controllers
                  .GroupBy(x => new
                  {
                      Date = x.Timestamp,
-                     Subject = x.Subject,
-                     GroupCode = x.Student.GroupFK
+                     SubjectCode = x.Subject.Code, //We cannot group by an entire object called subject
+                     GroupCode = x.Student.GroupFK,
+                     SubjectName = x.Subject.Name,
                  })
                   .Select(group => new SelectPastAttendancesViewModel()
                   {
-                      SubjectCode = group.Key.Subject.Code,
+                      SubjectCode = group.Key.SubjectCode,
                       Date = group.Key.Date,
                       GroupCode = group.Key.GroupCode,
-                      SubjectName = group.Key.Subject.Name
+                      SubjectName = group.Key.SubjectName,
                   }).
                  ToList();
+
+            //foreach (var attendance in pastAttendances)
+            //{
+            //    attendance.SubjectName = _subjectsRepository.getSubjects().SingleOrDefault(x => x.Code == attendance.SubjectCode).Name;
+            //}
 
             SelectGroupSubjectViewModel viewModel = new SelectGroupSubjectViewModel();
             viewModel.Subjects = subjects.ToList();
@@ -89,36 +95,65 @@ namespace Presentation.Controllers
         }
 
         [HttpGet]// it needs to show me which students are supposed to be in that attendance list
-        public IActionResult Create(string groupCode, string subjectCode)
+        public IActionResult Create(string groupCode, string subjectCode, string whichButton)
         {
             //todo:
             //a list of students pertaining to the group
             //group code
             //subject code/name
 
-            var students = _studentsRepository.GetStudents() //Select * from Sutdent
-                            .Where(x=>x.GroupFK == groupCode) //Select * from Students where GroupFK = groupCode
-                            .OrderBy(x=>x.LastName)// Select * From Students Where GroupFK = groupCode order by LastName
+            if (whichButton == "0")
+            {
+                var students = _studentsRepository.GetStudents() //Select * from Sutdent
+                            .Where(x => x.GroupFK == groupCode) //Select * from Students where GroupFK = groupCode
+                            .OrderBy(x => x.LastName)// Select * From Students Where GroupFK = groupCode order by LastName
                             .ToList();//here is where the execution ie opening a connection to a db actually happens
 
-            CreateAttendanceViewModel viewModel = new CreateAttendanceViewModel();
-            viewModel.SubjectCode = subjectCode;
-            viewModel.Students = students;
-            viewModel.groupCode = groupCode;
+                CreateAttendanceViewModel viewModel = new CreateAttendanceViewModel();
+                viewModel.SubjectCode = subjectCode;
+                viewModel.Students = students;
+                viewModel.groupCode = groupCode;
 
-            var mySubject = _subjectsRepository.getSubjects()
-                            .SingleOrDefault(x => x.Code == subjectCode);
+                var mySubject = _subjectsRepository.getSubjects()
+                                .SingleOrDefault(x => x.Code == subjectCode);
 
-            if (mySubject == null)
-            {
-                viewModel.SubjectName = string.Empty; // we throw an exception, we do exception handling or redirect the user to an error page
-            }
+                if (mySubject == null)
+                {
+                    viewModel.SubjectName = string.Empty; // we throw an exception, we do exception handling or redirect the user to an error page
+                }
+                else
+                {
+                    viewModel.SubjectName = mySubject.Name;
+                }
+
+                return View(viewModel);
+            } 
             else
             {
-                viewModel.SubjectName = mySubject.Name;
+                string[] myValues = whichButton.Split(new char[] {'|'});
+                DateTime date = Convert.ToDateTime(myValues[0]);
+                string selectedSubjectCode = myValues[1];
+                string selectedGroupCode = myValues[2];
+
+                CreateAttendanceViewModel myModel = new CreateAttendanceViewModel();
+                myModel.SubjectCode = subjectCode;
+                myModel.groupCode = groupCode;
+                myModel.Students = _studentsRepository.GetStudents() //Select * from Sutdent
+                            .Where(x => x.GroupFK == selectedGroupCode) //Select * from Students where GroupFK = groupCode
+                            .OrderBy(x => x.LastName)// Select * From Students Where GroupFK = groupCode order by LastName
+                            .ToList();//here is where the execution ie opening a connection to a db actually happens
+                myModel.Presence = _attendancesRepository.GetAttendances().Where(x=>x.SubjectFK == selectedSubjectCode && 
+                x.Timestamp.Day == date.Day &&
+                x.Timestamp.Month == date.Month &&
+                x.Timestamp.Year == date.Year &&
+                x.Timestamp.Hour == date.Hour&&
+                x.Timestamp.Minute == date.Minute
+                ).OrderBy(x=>x.Student.LastName).Select(x=>x.Present).ToList();
+
+                return View(myModel);
+
             }
 
-            return View(viewModel);
         }
 
         [HttpPost]//it saves the absents and presents of all the students from the first Create method

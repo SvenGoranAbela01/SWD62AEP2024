@@ -33,6 +33,7 @@ namespace DataAccess.Repositories
             foreach (var a in attendances)
             {
                 a.Timestamp = currentTime;
+                a.SubjectFK = a.SubjectFK.Trim();
                 _attendanceContext.Attendances.Add(a);
             }
 

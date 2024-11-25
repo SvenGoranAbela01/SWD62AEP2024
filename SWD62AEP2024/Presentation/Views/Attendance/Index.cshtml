@@ -19,5 +19,18 @@
         </select>
     </div>
 
-    <button type="submit" class="btn btn-primary">Take Attendance</button>
+    <button type="submit" class="btn btn-primary" name="whichButton" value="0">Take Attendance</button>
+    <table>
+        @foreach(var attendance in Model.PastAttendances)
+        {
+            <tr>
+                <td>@attendance.Date.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@attendance.SubjectName</td>
+                <td>@attendance.GroupCode</td>
+                <td>
+                    <button type="submit" class="btn btn-primary" name="whichButton" value="@attendance.Date|@attendance.SubjectCode|@attendance.GroupCode">Edit Attendance</button>
+                </td>
+            </tr>
+        }
+    </table>
 </form>
