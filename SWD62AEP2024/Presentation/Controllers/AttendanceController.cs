@@ -138,8 +138,8 @@ namespace Presentation.Controllers
                 string selectedGroupCode = myValues[2];
 
                 CreateAttendanceViewModel myModel = new CreateAttendanceViewModel();
-                myModel.SubjectCode = subjectCode;
-                myModel.groupCode = groupCode;
+                myModel.SubjectCode = selectedSubjectCode;
+                myModel.groupCode = selectedGroupCode;
                 myModel.Students = _studentsRepository.GetStudents() //Select * from Sutdent
                             .Where(x => x.GroupFK == selectedGroupCode) //Select * from Students where GroupFK = groupCode
                             .OrderBy(x => x.LastName)// Select * From Students Where GroupFK = groupCode order by LastName
@@ -149,7 +149,8 @@ namespace Presentation.Controllers
                 x.Timestamp.Month == date.Month &&
                 x.Timestamp.Year == date.Year &&
                 x.Timestamp.Hour == date.Hour&&
-                x.Timestamp.Minute == date.Minute
+                x.Timestamp.Minute == date.Minute &&
+                x.Student.GroupFK == selectedGroupCode
                 ).OrderBy(x=>x.Student.LastName).ToList();
 
                 ViewBag.update = true;
