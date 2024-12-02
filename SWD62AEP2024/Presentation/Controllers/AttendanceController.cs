@@ -126,6 +126,8 @@ namespace Presentation.Controllers
                     viewModel.SubjectName = mySubject.Name;
                 }
 
+                ViewBag.update = false; //on the fly = it will be created when the application runs// another aproach to pass data to the views
+
                 return View(viewModel);
             } 
             else
@@ -142,13 +144,15 @@ namespace Presentation.Controllers
                             .Where(x => x.GroupFK == selectedGroupCode) //Select * from Students where GroupFK = groupCode
                             .OrderBy(x => x.LastName)// Select * From Students Where GroupFK = groupCode order by LastName
                             .ToList();//here is where the execution ie opening a connection to a db actually happens
-                myModel.Presence = _attendancesRepository.GetAttendances().Where(x=>x.SubjectFK == selectedSubjectCode && 
+                myModel.Attendances = _attendancesRepository.GetAttendances().Where(x=>x.SubjectFK == selectedSubjectCode && 
                 x.Timestamp.Day == date.Day &&
                 x.Timestamp.Month == date.Month &&
                 x.Timestamp.Year == date.Year &&
                 x.Timestamp.Hour == date.Hour&&
                 x.Timestamp.Minute == date.Minute
-                ).OrderBy(x=>x.Student.LastName).Select(x=>x.Present).ToList();
+                ).OrderBy(x=>x.Student.LastName).ToList();
+
+                ViewBag.update = true;
 
                 return View(myModel);
 
@@ -157,11 +161,19 @@ namespace Presentation.Controllers
         }
 
         [HttpPost]//it saves the absents and presents of all the students from the first Create method
-        public IActionResult Create(List<Attendance> attendances)
+        public IActionResult Create(List<Attendance> attendances, bool update)
         {
             if (attendances.Count > 0)
             {
-                _attendancesRepository.AddAttendances(attendances);
+                if (update)
+                {
+                    _attendancesRepository.UpdateAttendances(attendances);
+                }
+                else
+                {
+                    _attendancesRepository.AddAttendances(attendances);
+                }
+                
                 TempData["message"] = "Attendance Saved";
             }
 

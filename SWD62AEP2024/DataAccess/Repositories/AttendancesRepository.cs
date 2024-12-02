@@ -55,6 +55,16 @@ namespace DataAccess.Repositories
         {
             return _attendanceContext.Attendances;
         }
+
+        public void UpdateAttendances(List<Attendance> attendances)
+        {
+            foreach (var a in attendances)
+            {
+                var oldRecord = GetAttendances().SingleOrDefault(x => x.Id == a.Id);
+                oldRecord.Present = a.Present;
+            }
+            _attendanceContext.SaveChanges();
+        }
     }
 
 }

@@ -6,11 +6,11 @@ namespace Presentation.Models
     {
         public CreateAttendanceViewModel() 
         {
-            Presence = new List<bool>();
+            Attendances = new List<Attendance>();//an empty list
         }
 
         public List<Student> Students { get; set; }
-        public List<bool> Presence { get; set; }
+        public List<Attendance> Attendances { get; set; }
         public string SubjectCode { get; set; }
         public string SubjectName { get; set; }
         public string groupCode { get; set; }
