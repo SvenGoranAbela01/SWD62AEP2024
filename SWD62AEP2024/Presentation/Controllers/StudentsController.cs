@@ -2,6 +2,7 @@
 using Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Presentation.ActionFilters;
 using Presentation.Models;
 using System.Linq;
 
@@ -12,7 +13,7 @@ namespace Presentation.Controllers
     //keep the repository classes to interact directly with the database;
     //keep the controllers to handle requests/responses i.e. user input and then sanitaze accordingly
     // in other words do not make any calls directly to the database in the controller
-
+    [LogsActionFilter()]
     public class StudentsController : Controller
     {
         private StudentsRepository _studentsRepository;
@@ -22,6 +23,7 @@ namespace Presentation.Controllers
         {
             _studentsRepository = studentsRepository;
         }
+        [HttpGet]
         public IActionResult List()
         {
             var list = _studentsRepository.GetStudents();

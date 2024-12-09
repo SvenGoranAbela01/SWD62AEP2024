@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using DataAccess.DataContext;
 using DataAccess.Repositories;
 using Domain.Models;
+using Presentation.ActionFilters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,10 +23,17 @@ builder.Services.AddControllersWithViews();
  * AddSingleton - 1 instance lof StudentsRepository to be shared by all users accessing your website and all requests
  */
 
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<LogsActionFilter>(); // Add the filter to all controllers });
+});
+
+
 builder.Services.AddScoped<StudentsRepository>();
 builder.Services.AddScoped<GroupsRepository>();
 builder.Services.AddScoped<SubjectsRepository>();
 builder.Services.AddScoped<AttendancesRepository>();
+builder.Services.AddScoped<LogsRepository>();
 
 
 var app = builder.Build();

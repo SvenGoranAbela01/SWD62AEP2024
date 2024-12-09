@@ -18,6 +18,7 @@ namespace DataAccess.DataContext
         {
         }
 
+        public DbSet<Log> Logs { get; set; }
         public DbSet<Subject> Subjects { get; set; }
         public DbSet<Attendance> Attendances { get; set; }
         public DbSet<Group> Groups { get; set; }
