@@ -37,7 +37,7 @@ builder.Services.AddScoped<AttendancesRepository>();
 
 //builder.Services.AddScoped<ILogsRepository, LogsDbRepository>();
 
-var logsSetting = 2;
+var logsSetting = 1;
 
 try
 {

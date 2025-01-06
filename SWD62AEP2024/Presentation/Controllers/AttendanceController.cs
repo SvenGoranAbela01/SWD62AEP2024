@@ -1,5 +1,6 @@
 ﻿using DataAccess.DataContext;
 using DataAccess.Repositories;
+using Domain.Interfaces;
 using Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -13,17 +14,20 @@ namespace Presentation.Controllers
         GroupsRepository _groupsRepository;
         SubjectsRepository _subjectsRepository;
         StudentsRepository _studentsRepository;
+        ILogsRepository _logsRepository;
 
         public AttendanceController(AttendancesRepository attendancesRepositorty
             , GroupsRepository groupRepositorty
             , SubjectsRepository subjectRepositorty
             , StudentsRepository studentsRepository
+            , ILogsRepository logsRepository
             ) 
         {
             _attendancesRepository = attendancesRepositorty;
             _groupsRepository = groupRepositorty;
             _subjectsRepository = subjectRepositorty;
             _studentsRepository = studentsRepository;
+            _logsRepository = logsRepository;
         }
 
         //note: getting all attendances, but then extracting some information which i will put on screen
@@ -34,6 +38,13 @@ namespace Presentation.Controllers
             //note: getting all attendances, but then extracting some information which i will put on screen
             //      being Subject Date, Group
             //... this requires me to create a viewmodel to accomodate this newly formed group of data
+
+            _logsRepository.AddLog(new Log()
+            {
+                Message = "Accessed the Index method of the Attendence Controller",
+                User = User.Identity.Name,
+                IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString()
+            });
 
             //a history of attendances
             //var groupedAttendances = _attendancesRepository.GetAttendances()
